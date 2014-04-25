@@ -1,26 +1,23 @@
 #!/bin/bash
 ######################################################################################
 #
-#     PROGRAM       : pull-all.sh
-#     DESCRIPTION   : This script will perform a "git pull" operation on the master
-#                     branch for all local git repositories on a developer's machine.
+#     PROGRAM       : audit-all.sh
+#     DESCRIPTION   : This script will generate an audit report for all Git repos in 
+#                     a specified directory
 #
 #     CREATED BY    : Kevin Custer
-#     CREATION DATE : 02-APR-2014
-#
-#     INSTRUCTIONS  : Change START_HERE to match the path to the folder containing
-#                     your Git repositories.  Note the syntax of this path uses
-#                     forward slashes.  Place this script on your machine (the path
-#                     used for START_HERE is an ideal location), make sure the script
-#                     is executable, and run it from the Git Bash command prompt.
+#     CREATION DATE : 24-APR-2014
 #
 ######################################################################################
 
-START_HERE="/c/git/";
+START_HERE="/c/gitp/";
+OUTPUT="./report.html"
 
 cd $START_HERE;
 
-echo -e "\nPulling down the latest work for $START_HERE\n";
+echo "<html>" >> $OUTPUT
+
+echo -e "\nGenerating an audit report for $START_HERE\n";
 
 for d in $(find . -maxdepth 1 -mindepth 1 -type d); do
 	echo -e "$d";
@@ -34,8 +31,7 @@ for d in $(find . -maxdepth 1 -mindepth 1 -type d); do
             git checkout master;
       fi
 
-	git remote -v | grep fetch;
-	git pull;
+      echo "<h1>$d</h1>" > $OUTPUT
 
       # Return to the previously checked out branch
       if [ "$CURRENT_BRANCH" != "master" ]; then
@@ -43,7 +39,7 @@ for d in $(find . -maxdepth 1 -mindepth 1 -type d); do
       fi
 
 	cd $START_HERE;
-	echo -e "\n";
 done
 
 echo -e "\nAll local repositories have been updated.\n";
+echo "</html>" > $OUTPUT
